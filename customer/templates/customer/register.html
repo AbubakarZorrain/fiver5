@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Saas web app</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/puse-icons-feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'vendors/morris.js/morris.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+    <style type="text/css">/* Chart.js */
+    @-webkit-keyframes chartjs-render-animation {
+        from {
+            opacity: 0.99
+        }
+        to {
+            opacity: 1
+        }
+    }
+
+    @keyframes chartjs-render-animation {
+        from {
+            opacity: 0.99
+        }
+        to {
+            opacity: 1
+        }
+    }
+
+    .chartjs-render-monitor {
+        -webkit-animation: chartjs-render-animation 0.001s;
+        animation: chartjs-render-animation 0.001s;
+    }</style>
+</head>
+
+<body>
+
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth register-bg-1 theme-one">
+            <div class="row w-100">
+                <div class="col-lg-4 mx-auto">
+                    <h2 class="text-center mb-4">Register</h2>
+                    <div class="auto-form-wrapper">
+                        <form method="POST" enctype="multipart/form-data">
+                         {% csrf_token %}
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{form.user.label}}
+                                    {{form.user}}
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{form.email.label}}
+                                    {{form.email}}
+
+                                </div>
+                            </div>
+<!--                            {% if company is None %}-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="input-group">-->
+<!--                                        <input type="text" class="form-control" placeholder="Company Name"-->
+<!--                                               name="company_name">-->
+<!--                                        <div class="input-group-append">-->
+<!--                                        <span class="input-group-text"><i-->
+<!--                                                class="mdi mdi-check-circle-outline"></i></span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            {% endif %}-->
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{form.phone.label}}
+                                    {{form.phone}}
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{form.password.label}}
+                                    {{form.password}}
+
+                                </div>
+                            </div>
+
+                            <div class="form-group d-flex justify-content-center">
+                                <div class="form-check form-check-flat mt-0">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" checked="">
+                                        I agree to the terms
+                                        <i class="input-helper"></i></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary submit-btn btn-block">Proceed</button>
+                            </div>
+                            <div class="text-block text-center my-3">
+                                <span class="text-small font-weight-semibold">Already have and account ?</span>
+                                <a href="{% url 'login' %}" class="text-black text-small">Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+</body>
+</html>

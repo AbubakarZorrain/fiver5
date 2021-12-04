@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block ExtraCss %}
+<style>
+    #create-customer-model .profile-cont{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+    }
+    #create-customer-model .profile-cont img{
+        border-radius: 50%;
+    }
+    #create-customer-model .profile-cont .customer-type-cont{
+        display: flex;
+        flex-direction: row;
+    }
+    #create-customer-model .profile-cont .input-cont{
+        margin: 5px;
+        padding: 3px 8px;
+        border-radius: 35px;
+        background-color: #fff;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    #create-customer-model .profile-cont .input-cont input{
+        margin-left: 5px !important;
+    }
+    #create-customer-model .profile-cont .input-cont .label{
+        margin: 0 !important;
+        font-size: small;
+    }
+    .modal-header{
+        border-bottom: 1px solid rgba(0,0,0,.1);
+        padding: 10px !important;
+        align-items: center !important;
+    }
+</style>
+{% endblock ExtraCss %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h2>Clients</h2>
+        </div>
+        <div class="col text-right">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create-customer-model">
+                New Customer
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="create-customer-model" tabindex="-1" aria-labelledby="create-customer-model-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add a contact</h5>
+                <button type="button" class="btn btn-secondary" onclick="submitForm('new-customer-form')">Submit</button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'customers:client_create' %}" method="POST" id="new-customer-form">
+                    {% csrf_token %}
+                    <div class="profile-cont">
+                        <img src="{% static 'images/face27.jpg' %}" alt="profile pic" height="70px" width="70px">
+                        <div class="customer-type-cont">
+                            <div class="input-cont">
+                                <label class="label" for="customer_type1">Client</label>
+                                <input type="radio" name="customer_type" id="customer_type1" value="client" onchange="customerTypeHandler(this)">
+                            </div>
+                            <div class="input-cont">
+                                <label class="label" for="customer_type2">Lead</label>
+                                <input type="radio" name="customer_type" id="customer_type2" value="lead" onchange="customerTypeHandler(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="mb-3">
+                        {% comment %} <label for="contact-name-field" class="form-label">Contact Name</label> {% endcomment %}
+                        <input type="text" class="form-control" id="contact-name-field" placeholder="Enter Contact Name">
+                    </div>
+                    <div class="mb-3">
+                        <input list="entity-type-list" class="form-control" id="entity-type-field" placeholder="Entity Type" data-store-in="entity"/>
+                        <datalist id="entity-type-list">
+                            <option data-value="cc-member" value="CC MEMBER">
+                            <option data-value="close-corporation" value="CLOSE CORPORATION">
+                            <option data-value="director" value="DIRECTOR">
+                            <option data-value="individual" value="INDIVIDUAL">
+                            <option data-value="non-profit" value="NON-PROFIT">
+                            <option data-value="plc" value="PLC">
+                            <option data-value="pty-ltd" value="PTY LTD">
+                            <option data-value="sole-prop" value="SOLE PROP">
+                        </datalist>
+                        <input type="hidden" name="entity">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="company_name" id="company-name-field" placeholder="Enter Company Name">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="trading_name" id="trading-name-field" placeholder="Enter Trading Name">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="work_email" id="work-email-field" placeholder="Enter Work Email">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="text" class="form-control" name="landline_number" id="landline-number-field" placeholder="Enter Landline Number">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control" name="mobile_number" id="mobile-number-field" placeholder="Enter Mobile Number">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="note_field" id="note-field" rows="5" placeholder="Add a note"></textarea>
+                    </div>
+                    <div id="client-form" class="hidden">
+                        <p><strong>Company Details</strong></p>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="financial_year_end" id="financial-year-end-field" placeholder="Financial Year End">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="registration_number" id="registration-number-field" placeholder="Registration Number">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="registration_date" placeholder="Registration Date" onfocus="(this.type='date')" onblur="if(this.value==''){this.type='text'}">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="income_tax" id="income-tax-field" placeholder="Income Tax Number">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="vat_number" id="vat-number-field" placeholder="Vat Number">
+                            </div>
+                            <div class="col-4">
+                                <input list="vat-month-list" class="form-control" id="vat-month-field" placeholder="Vat Month" data-store-in="vat_month"/>
+                                <datalist id="vat-month-list">
+                                    <option data-value="monthly" value="Monthly">
+                                    <option data-value="even" value="Even">
+                                    <option data-value="odd" value="Odd">
+                                </datalist>
+                                <input type="hidden" name="vat_month">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="payee_number" id="payee-number-field" placeholder="PAYE Number">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="uif_number" id="uif-number-field" placeholder="UIF Number">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="coida_number" id="coida-number-field" placeholder="COIDA Number">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <input list="efiling-profile-list" class="form-control" id="efiling-profile-field" placeholder="Efiling Profile" data-store-in="efiling_profile"/>
+                                <datalist id="efiling-profile-list">``
+                                    <option data-value="firm" value="Firm">
+                                    <option data-value="own" value="Own">
+                                </datalist>
+                                <input type="hidden" name="efiling_profile">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" name="last_financials" id="last-financials-field" placeholder="Last Financials">
+                            </div>
+                        </div>
+
+                        <p><strong>Business Address</strong></p>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="billing_address" id="billing-address-field" placeholder="Enter Billing Address">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="billing_city" id="billing-city-field" placeholder="City">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="billing_state" id="billing-state-field" placeholder="State/Region">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="billing_zip" id="billing-zip-field" placeholder="Zip/Postal Code">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="billing_country" id="billing-country-field" placeholder="Enter Country Name">
+                        </div>
+
+                        <p><strong>Address</strong></p>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="address" id="address-field" placeholder="Enter Address">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="address_city" id="address-city-field" placeholder="City">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="address_state" id="address-state-field" placeholder="State/Region">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="address_zip" id="address-zip-field" placeholder="Zip/Postal Code">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="address_country" id="address-country-field" placeholder="Enter Country Name">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Client List</h4>
+            <div class="row">
+                <div class="col-12">
+                    <div id="order-listing_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                        <div class="row">
+                            {% comment %} <div class="col-sm-12 col-md-6">
+                                <a href="{% url 'customers:customers_create' %}" class="btn btn-outline-primary">Add Customers</a>
+                            </div> {% endcomment %}
+                            {% comment %} <div class="col-sm-12 col-md-6">
+                                <div id="order-listing_filter" class="dataTables_filter float-right"><label><input
+                                        type="search"
+                                        class="form-control"
+                                        placeholder="Search"
+                                        aria-controls="order-listing"></label>
+                                </div>
+                            </div> {% endcomment %}
+
+                            <a href="{% url 'customers:clients_list' %}?type=client" class="btn btn-outline-primary mx-2">Clients</a>
+                            <a href="{% url 'customers:clients_list' %}?type=lead" class="btn btn-outline-primary mx-2">Leads</a>
+                            <a href="{% url 'customers:clients_list' %}" class="btn btn-outline-primary mx-2">All Contacts</a>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="order-listing" class="table dataTable no-footer" role="grid"
+                                       aria-describedby="order-listing_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Order #: activate to sort column ascending"
+                                            style="width: 82.1px;">Type
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Purchased On: activate to sort column ascending"
+                                            style="width: 140.988px;">Name
+                                        </th>
+                                        <th class="sorting_asc" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Customer: activate to sort column descending"
+                                            aria-sort="ascending" style="width: 102.387px;">Email
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Ship to: activate to sort column ascending"
+                                            style="width: 79.0125px;">Telephone
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Base Price: activate to sort column ascending"
+                                            style="width: 110.562px;">Address
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="order-listing" rowspan="1"
+                                            colspan="1" aria-label="Purchased Price: activate to sort column ascending"
+                                            style="width: 160.3px;">Income Tax
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for customer in customers %}
+                                        <tr role="row" class="odd">
+                                            <td class="">{{ customer.get_customer_type_display }}</td>
+                                            <td class="">{{ customer.trading_name }}</td>
+                                            <td class="sorting_1">{{ customer.work_email }}</td>
+                                            <td>{{ customer.mobile_number }}</td>
+                                            <td>{{ customer.address }}</td>
+                                            <td>{{ customer.income_tax }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block ExtraJs %}
+{% comment %} <script>
+    // data-dismiss="modal" aria-label="Close"
+    const buttons = document.querySelectorAll('[data-bs-toggle="modal"]');
+    buttons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const targetId = btn.getAttribute('data-target')
+            let target = document.querySelector(`${targetId}`)
+            target.classList.toggle('hidden', false)
+        })
+    })
+</script> {% endcomment %}
+<script>
+
+    var datalists = document.querySelectorAll("datalist");
+    datalists.forEach(list=>{
+        const listId = list.getAttribute('id')
+        const input = document.querySelector(`input[list='${listId}']`)
+        input.addEventListener('change', ()=>{
+            const value = input.value
+            const storageInputName = input.getAttribute('data-store-in')
+            var entityValue = document.querySelector(`#${listId} option[value='${value}']`).getAttribute("data-value");
+            document.querySelector(`input[name='${storageInputName}']`).value = entityValue
+        })
+    })
+
+    function customerTypeHandler(elem){
+        var clientForm = document.getElementById("client-form");
+        if (elem.value == "client"){
+            clientForm.classList.toggle('hidden', false)
+        } else {
+            clientForm.classList.toggle('hidden', true)
+        }
+    }
+
+    function submitForm(formId){
+        var form = document.getElementById(formId);
+        form.submit()
+    }
+
+</script>
+{% endblock ExtraJs %}
